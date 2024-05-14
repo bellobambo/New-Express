@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const port = process.env.PORT
+const port = process.env.PORT || 8000
 
 const app = express();
 
@@ -8,17 +8,29 @@ const app = express();
 // app.use(express.static(path.join(__dirname, 'public')));
 
 let posts = [
-    {id : 1, title : 'Post One'},
-    {id : 2, title : 'Post two'},
-    {id : 3, title : 'Post three'},
+    { id: 1, title: 'Post One' },
+    { id: 2, title: 'Post two' },
+    { id: 3, title: 'Post three' },
 ];
 
 
-app.get('/api/posts', (req, res)=>{
-res.json(posts);
+//GET ALL POST
+
+app.get('/api/posts', (req, res) => {
+    console.log(req.query);
+    res.json(posts);
 
 })
 
-app.listen(8000, () => {
-    console.log('Server is running on port 8000');
+
+app.get('/api/posts/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    res.json(posts.filter((post)=> post.id === id));
+
+})
+
+
+
+app.listen(port, () => {
+    console.log('Server is running on port 8080');
 })
