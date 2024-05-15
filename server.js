@@ -1,36 +1,25 @@
-const express = require('express');
-const path = require('path');
+import express from 'express';
+import path from 'path';
+import posts from './routes/posts.js'
+import logger from './middleware/logger.js'
 const port = process.env.PORT || 8000
 
 const app = express();
 
-//setup static folder
-// app.use(express.static(path.join(__dirname, 'public')));
-
-let posts = [
-    { id: 1, title: 'Post One' },
-    { id: 2, title: 'Post two' },
-    { id: 3, title: 'Post three' },
-];
+//Body Parser
+app.use(express.json());
+app.use(express.urlencoded({extended : false}));
 
 
-//GET ALL POST
+//Logger mifddlware
 
-app.get('/api/posts', (req, res) => {
-    console.log(req.query);
-    res.json(posts);
+app.use(logger);
 
-})
+//Routes
 
-
-app.get('/api/posts/:id', (req, res) => {
-    const id = parseInt(req.params.id);
-    res.json(posts.filter((post)=> post.id === id));
-
-})
-
-
+app.use('/api/posts' , posts)
 
 app.listen(port, () => {
     console.log('Server is running on port 8080');
 })
+
