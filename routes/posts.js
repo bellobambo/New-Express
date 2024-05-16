@@ -18,7 +18,7 @@ let posts = [
 
 //GET ALL POST
 
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
     const limit = parseInt(req.query.limit);
     if (!isNaN(limit) && limit > 0) {
         return res.status(200).json(posts.slice(0, limit));
@@ -29,52 +29,60 @@ router.get('/', (req, res) => {
 })
 
 
-router.get('/:id', (req, res) => {
+router.get('/:id', (req, res, next) => {
     const id = parseInt(req.params.id);
     const post = posts.find((post) => post.id === id);
 
     if (!post) {
-        return res.status(404).json({ msg: `A post with id ${id} was not found` });
+        const error = new Error(`A post with id ${id} was not found`)
+        error.status = 404;
+         return next(error);
     }
     res.status(200).json(post)
 
 });
 
 
-router.post('/', (req, res) => {
+router.post('/', (req, res, next) => {
     const newPost = {
         id: posts.length + 1,
         title: req.body.title
     };
 
     if (!newPost.title) {
-        return res.status(400).json({ msg: 'Please include a title' })
+        const error = new Error(`Please Include a title`)
+        error.status = 400;
+         return next(error);
     }
     posts.push(newPost);
     res.status(201).json(newPost);
 });
 
 //update post
-router.put('/:id', (req, res) => {
+router.put('/:id', (req, res, next) => {
     const id = parseInt(req.params.id);
 
     const post = posts.find((post) => post.id === id);
 
     if (!post) {
-        return res.status(404).json({ msg: `A post with id ${id} was not found` });
+       const error = new Error(`A post with id ${id} was not found`)
+       error.status = 404;
+        return next(error);
     }
 
     post.title = req.body.title;
     res.status(200).json(posts);
 })
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', (req, res, next) => {
     const id = parseInt(req.params.id);
 
     const post = posts.find((post) => post.id === id);
 
     if (!post) {
-        return res.status(404).json({ msg: `A post with id ${id} was not found` });
+        const error = new Error(`A post with id ${id} was not found`)
+        error.status = 404;
+         return next(error);
     }
 
     posts = posts.filter((post) => post.id !== id);
