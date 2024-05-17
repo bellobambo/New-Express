@@ -4,10 +4,16 @@ import posts from './routes/posts.js'
 import logger from './middleware/logger.js'
 import errorHandler from './middleware/error.js';
 import notFound from './middleware/Notfound.js';
+import {fileURLToPath} from 'url';
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
+
 const port = process.env.PORT || 8000
-
 const app = express();
-
 //Body Parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
